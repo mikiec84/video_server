@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>video </title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.5 -->
+    <link rel="stylesheet" href="http://192.168.189.134:8080/statics/css/bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="http://192.168.189.134:8080/statics/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="http://192.168.189.134:8080/statics/css/_all-skins.min.css">
+    <link rel="stylesheet" href="http://192.168.189.134:8080/statics/css/base.css">
+    <link rel="stylesheet" href="http://192.168.189.134:8080/statics/css/side-comments.css">
+    <link rel="stylesheet" href="http://192.168.189.134:8080/statics/css/themes/default-theme.css">
+    <link rel="stylesheet" href="http://192.168.189.134:8080/statics/css/basics.css">
+
+    <script type="text/javascript" src="http://192.168.189.134:8080/statics/js/jquery.min.js"></script>
+    <script type="text/javascript" src="http://192.168.189.134:8080/statics/js/md5.js"></script>
+    <script type="text/javascript" src="http://192.168.189.134:8080/statics/js/md5.min.js"></script>
+    <script type="text/javascript" src="http://192.168.189.134:8080/statics/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://192.168.189.134:8080/statics/js/ajaxfileupload.js"></script>
+    <script type="text/javascript" src="http://192.168.189.134:8080/statics/js/home.js"></script>
+    <script type="text/javascript" src="http://192.168.189.134:8080/statics/js/side-comments.js"></script>
+    <script type="text/javascript" src="http://192.168.189.134:8080/statics/js/test_data.js"></script>
+</head>
+<!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+<body class="hold-transition skin-blue layout-top-nav">
+ <form enctype="multipart/form-data" method="post">
+	<input id="fileName" accept="video/*" style="display:none" class="form-control"
+	type="file" name="file" />
+</form>
+<div class="wrapper">
+    <header class="main-header">
+        <nav class="navbar navbar-static-top">
+            <div class="container">
+                <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">Home</a></li>
+                        <li><a href="#">{{.Name}}</a></li>
+                        <li><a id="vdoFile" href="#">Upload</a></li>
+                        
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav right-box">
+                        <li class="dropdown messages-menu">
+                            <a id="logoutBtn" href="#">logout</a>
+                        </li><!-- /.messages-menu -->
+                    </ul>
+                </div>
+            </div><!-- /.container-fluid -->
+        </nav>
+    </header>
+</div><!-- /.content-wrapper -->
+<div class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <h1 style="padding-left: 15px;">
+                User Profile
+            </h1>
+            <div class="col-sm-7">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <p>
+                            <video width="100%" src="http://192.168.189.134:8080/statics/video/11111.mp4" 
+                            controls="controls">
+                                your browser does not support the video tag
+                            </video>
+                        </p>
+                        <p>
+                            详细内容
+                        </p>
+                    </div>
+                    <div>
+                        <h1 class="title">
+                            SideComments.js In Action
+                        </h1>
+                        <div id="commentable-container" class="container commentable-container">
+                            
+                            <!-- 
+                            <div>
+                                <div class='user-block'>
+                                    <img class='img-circle img-bordered-sm' src="http://192.168.189.134:8080/statics/images/user1-128x128.jpg" alt='user image'>
+                                    <span class='username'>
+                                  <a href="#">Sarah Ross</a>
+                                  <a href='#' class='pull-right btn-box-tool'><i class='fa fa-times'></i></a>
+                                </span>
+                                    <span class='description'>Sent you a message - 3 days ago</span>
+                                </div>
+                                
+                                <p data-section-id="1" class="commentable-section">
+                                    Each paragraph tag has the "commentable-section" class, making it a section which can be commented on after you've initialized a new SideComments object and pointed it at the parent element, which is "#commentable-container" for this demo.
+                                </p>
+
+                            </div>
+                            
+                            <div>
+                                <div class='user-block'>
+                                    <img class='img-circle img-bordered-sm' src="http://192.168.189.134:8080/statics/images/user1-128x128.jpg" alt='user image'>
+                                    <span class='username'>
+                                  <a href="#">Sarah Ross</a>
+                                  <a href='#' class='pull-right btn-box-tool'><i class='fa fa-times'></i></a>
+                                </span>
+                                    <span class='description'>Sent you a message - 3 days ago</span>
+                                </div>
+                                
+                                <p data-section-id="2" class="commentable-section">
+                                    Clicking on the markers on the right will show the SideComments. Sections without any comments only show their marker on hover.
+                                </p>
+
+                            </div>
+                            
+                            <div>
+                                <div class='user-block'>
+                                    <img class='img-circle img-bordered-sm' src="http://192.168.189.134:8080/statics/images/user1-128x128.jpg" alt='user image'>
+                                    <span class='username'>
+                                  <a href="#">Sarah Ross</a>
+                                  <a href='#' class='pull-right btn-box-tool'><i class='fa fa-times'></i></a>
+                                </span>
+                                    <span class='description'>Sent you a message - 3 days ago</span>
+                                </div>
+                                
+                                <p data-section-id="3" class="commentable-section">
+                                    This is the default theme that comes with SideComments.js. You can easily theme SideComments to your liking by not including "default-theme.css" and just styling it all yourself.
+                                </p>
+
+                            </div>
+                            
+                            -->
+
+                        </div>
+
+                        <form class='form-horizontal'>
+                            <div class='form-group margin-bottom-none'>
+                                <div class='col-sm-9'>
+                                    <input class="form-control input-sm" placeholder="Response">
+                                </div>
+                                <div class='col-sm-3'>
+                                    <button id="cmtBtn" class='btn btn-danger pull-right btn-block btn-sm'>Send</button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-sm-5">
+                
+            </div>
+        </div>
+    
+    <script>
+        $(".col-sm-5").prepend( function() {
+            return listVideos(AllVideos);
+        });
+        $(".commentable-container").prepend(function() {
+            return listComments(AllComments);
+        });
+        $(document).ready(function(){
+            var SideComments = require('side-comments');
+            window.sideComments = new SideComments('#commentable-container', currentUser, existingComments);
+            window.sideComments.on('commentPosted', function( comment ) {
+            comment.id = parseInt(Math.random() * (100000 - 1) + 1);
+            sideComments.insertComment(comment);
+        });
+        window.sideComments.on('commentDeleted', function( comment ) {
+            sideComments.removeComment(comment.sectionId, comment.id);
+        });
+    });
+    </script>
+    
+    </div>
+</div>
+</body>
+</html>

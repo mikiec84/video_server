@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Log in</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="http://{{.HostUrl}}/statics/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://{{.HostUrl}}/statics/css/base.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="http://{{.HostUrl}}/statics/css/AdminLTE.min.css">
+        <script type="text/javascript" src="http://{{.HostUrl}}/statics/js/jquery.min.js"></script>
+        <script type="text/javascript" src="http://{{.HostUrl}}/statics/js/md5.js"></script>
+        <script type="text/javascript" src="http://{{.HostUrl}}/statics/js/md5.min.js"></script>
+        <script type="text/javascript" src="http://{{.HostUrl}}/statics/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="http://{{.HostUrl}}/statics/js/home.js"></script>
+    </head>
+    <div class="login-box" style="margin: 15% auto;">
+        <div class="login-box-body">
+            <p class="login-box-msg">Welcome  to  MOVIEDASH</p>
+            <form  method="post" action="http://127.0.0.1:8000/">
+                <div class="form-group has-feedback">
+                    <input id="userNameTxt" type="email" class="form-control" placeholder="Email">
+                </div>
+                <div class="form-group has-feedback">
+                    <input id="pwdTxt" type="password" class="form-control" placeholder="Password">
+                </div>
+            </form>
+    
+            <div class="social-auth-links text-center">
+    <!-- onclick="login();" -->
+                <button id="siginbtn" style="text-align: center;padding-left: 0px;" type="submit"
+                class="btn btn-block btn-social btn-primary btn-flat">登录</button>
+                <button id="regbtn" style="text-align: center;padding-left: 0px;" 
+                class="btn btn-block btn-social btn-info btn-flat">注册</button>
+            </div>
+    
+        </div>
+    </div>
+</html>

@@ -1,0 +1,76 @@
+
+跨域接口API说明列表, method: POST 
+
+1. details: 获取用户的全部视频列表
+url: http://192.168.189.134:8080/api
+parameter:
+{
+    "url": "http://192.168.189.134:8000/videos/wangbojing",
+    "method": "GET",
+    "req_body": ""
+}
+
+2. details: 用户登录
+url: http://192.168.189.134:8080/api
+parameter: 
+{
+    "url": "http://192.168.189.134:8000/user/wangbojing",
+    "method": "POST",
+    "req_body": "{\"user_name\":\"wangbojing\",\"pwd\": \"e12ba37ed81660d5c918a919622f78c3\"}"
+}
+
+
+3. details: 添加用户的视频信息
+url: http://192.168.189.134:8080/api
+parameter: 
+{
+    "url": "http://192.168.189.134:8000/videos/wangbojing",
+    "method": "POST",
+    "req_body": "{\"author_id\": 1, \"name\":\"123456.mp4\"}"
+}
+
+4. details: 注册用户信息
+url: http://192.168.189.134:8080/api
+parameter: 
+{
+    "url": "http://192.168.189.134:8000/user",
+    "method": "POST",
+    "req_body": "{\"user_name\":\"wangbojing\",\"pwd\": \"e12ba37ed81660d5c918a919622f78c3\"}"
+}
+
+5. details: 获取用户ID
+url: http://192.168.189.134:8080/api
+parameter: 
+{
+    "url": "http://192.168.189.134:8000/user/wangbojing",
+    "method": "GET",
+    "req_body": "{\"user_name\":\"wangbojing\",\"pwd\": \"e12ba37ed81660d5c918a919622f78c3\"}"
+}
+
+6. details: 删除用户的视频信息
+url: http://192.168.189.134:8080/api
+parameter: 
+{
+    "url": "http://192.168.189.134:8000/videos/wangbojing/bbe000c3-d04b-f91a-c212-df651b21c3ce",
+    "method": "DELETE",
+    "req_body": ""
+}
+
+7. details: 添加一个评论
+url: http://192.168.189.134:8080/api
+parameter: 
+{
+    "url": "http://192.168.189.134:8000/comments/videos/bbe000c3-d04b-f91a-c212-df651b21c3ce",
+    "method": "POST",
+    "req_body": "{\"author_id\": 1, \"content\": \"你好\"}"
+}
+
+8. details: 获取视频的评论
+url: http://192.168.189.134:8080/api
+parameter:
+{
+    "url": "http://192.168.189.134:8000/comments/videos/bbe000c3-d04b-f91a-c212-df651b21c3ce",
+    "method": "GET",
+    "req_body": ""
+}
+

@@ -1,0 +1,18 @@
+.login-bg {
+    z-index: 1;
+    position: absolute;
+    width: 100vw;
+    height: 100%;
+    background-size: cover;
+    background-image: url(../image/timg.jpg) !important;
+    /*background-color:#94abda !important;*/
+    background-repeat: no-repeat;
+    background-size: 100%;
+    text-align: center;
+}
+.right-box{
+    display: inline-block;
+    max-height: 50px;
+    line-height: 50px;
+    color: #fff;
+}

@@ -1,0 +1,44 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+
+        <div id="curr-video-ctime"></div>
+
+        <div id="snackbar">Comment submission succeeded</div>
+
+        <div id="errorbar">Error happened</div>
+        <div id="comments">
+            <textarea id="comments-input" name="message" rows="5" cols="90"
+            placeholder="Input your comment"></textarea>
+            <input id="submit-comment" type="submit">
+            <hr size="1" style="border-color: #EDE3E1;">
+            <div id="comments-total">0 Comments</div>
+            <div id="comments-history"></div>
+        </div>
+
+        <div id="items" class="video-thumbnail-list"></div>
+        <div id="uploadvideomodal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h1>Modal Header</h1>
+                </div>
+                <div class="modal-body">
+                    <form id="uploadform" action="http:127.0.0.1:9000/upload/wangbojing"
+                    method="POST" enctype="multipart/form-data" class="uploadForm">
+                        <input class="uploadForm__input" type="file" name="file"
+                        id="inputFile" accept="video/*">
+                        <input type="text" id="vname" name="video name">
+                        <input type="submit" id="upload-submit" name="submit"
+                        value="Submit">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <h3>Modal Footer</h3>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
