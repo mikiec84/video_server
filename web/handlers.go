@@ -30,6 +30,12 @@ type LoginPage struct {
 	HostUrl string 
 }
 
+var (
+	video_base_url = "http://192.168.189.134:8080/statics/video/"
+	image_base_url = "http://192.168.189.134:8080/statics/images/"
+	default_video = "11111.mp4"
+)
+
 func loginHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	//cname, err1 := r.Cookie("username")
 	//sid, err2 := r.Cookie("session")
@@ -76,9 +82,9 @@ func homeHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 func userHomeHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	cname, err1 := r.Cookie("username")
-	cooike, err2 := r.Cookie("session")
+	session, err2 := r.Cookie("session")
 
-	log.Printf("userHomeHandler name:%s, cookie:%s", cname, cooike);
+	log.Printf("userHomeHandler name:%s, cookie:%s", cname, session);
 
 	if err1 != nil || err2 != nil {
 		http.Redirect(w, r, "/", http.StatusFound)
@@ -87,7 +93,7 @@ func userHomeHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 
 	fname := r.FormValue("username")
 
-	videourl := "http://192.168.189.134:8080/statics/video/11111.mp4"
+	videourl := video_base_url + default_video
 	hosturl := "192.168.189.134:8080"
 	var p *UserPage
 	if len(cname.Value) != 0 {
@@ -95,6 +101,9 @@ func userHomeHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Param
 	} else if len(fname) != 0 {
 		p = &UserPage{Name: fname, HostUrl: hosturl}
 	}
+
+	cookie := http.Cookie{Name: "defaultvideo", Value: default_video, Path: "/", MaxAge: 30 * 60 * 60}
+	http.SetCookie(w, &cookie)
 
 	t, e := template.ParseFiles("./bin/template/userhome.html")
 	if e != nil {

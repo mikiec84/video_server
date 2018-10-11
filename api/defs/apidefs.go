@@ -76,6 +76,8 @@ type Comment struct {
 	VideoId string `json:"video_id"`
 	AuthorId string `json:"author"`
 	Content string `json:"content"`
+	ICon string `json:"icon"`
+	Time string `json:"time"`
 }
 
 type SimpleSession struct {

@@ -8,6 +8,7 @@
 
     session = getCookie('session');
     uname = getCookie('username');
+    userid = getCookie('userid');
 
     //home page event registry
     $("#regbtn").bind('click', function(e) {
@@ -35,15 +36,22 @@
             "url": "http://192.168.189.134:8000/user/wangbojing",
             "method": "POST",
             "req_body": "{\"user_name\":\"" + userName + "\",\"pwd\": \"" + hash + "\"}"
-        }
+        };
+        var req_data = {
+            "url": "http://192.168.189.134:8000/user/wangbojing",
+            "method": "GET",
+            "req_body": "{\"user_name\":\"" + userName + "\",\"pwd\": \"" + hash + "\"}"
+        };
 
         $.ajax({
             type: 'POST',
             url: "http://192.168.189.134:8080/api",
             data: JSON.stringify(data),
             dataType: 'json',
+            
             success: function(d) {
-                //alert('success');
+                var json = JSON.parse(JSON.stringify(d));
+
                 setCookie("username", userName, 30 * 60 * 60);
                 setCookie("session", hash, 30 * 60 * 60);
 
@@ -51,6 +59,34 @@
             },
             error: function(e) {
                 alert('error');
+            },
+            complete: function() {
+
+                session = getCookie('session');
+                uname = getCookie('username');
+
+                $.ajax({
+                    type: 'POST',
+                    url: "http://192.168.189.134:8080/api",
+                    data: JSON.stringify(req_data),
+                    dataType: 'json',
+
+                    beforeSend: function(xhrq) {
+                        xhrq.setRequestHeader("X-Session-Id", session);
+                        xhrq.setRequestHeader("X-User-Name", uname);
+                    },
+                    success: function(d) {
+        
+                        var json = JSON.parse(JSON.stringify(d));
+                        var idx = json.id;
+
+                        setCookie("userid", idx, 30 * 60 * 60);
+
+                    },
+                    error: function(e) {
+                        alert('error' + JSON.stringify(e));
+                    }
+                });
             }
         });
     });
@@ -81,7 +117,41 @@
     $('#cmtBtn').bind('click', function() {
         //alert("Send Comments");
         var comment = $(cmtTxt).val();
-        alert(comment);
+        userid = getCookie('userid');
+
+        videoid = getCookie('defaultvideo_id');
+/*
+        setCookie("defaultvideo", videos[0].name, 30 * 60 * 60);
+        setCookie("defaultvideo_id", videos[0].id, 30 * 60 * 60);
+        setCookie("defaultvideo_authorid", videos[0].author_id, 30 * 60 * 60);
+*/
+        //alert(comment);
+
+        var req_data = {
+            "url": "http://192.168.189.134:8000/comments/videos/" + videoid,
+            "method": "POST",
+            "req_body": "{\"author_id\":" + userid + ", \"content\": \"" + comment + "\"}"
+        };
+        
+        $.ajax({
+            type: 'POST',
+            url: "http://192.168.189.134:8080/api",
+            data: JSON.stringify(req_data),
+            dataType: 'json',
+            beforeSend: function(xhrq) {
+                xhrq.setRequestHeader("X-Session-Id", session);
+                xhrq.setRequestHeader("X-User-Name", uname);
+            },
+            success: function(d) {
+                //alert(JSON.stringify(d));
+            },
+            complete: function() {
+                window.location.reload();
+            },
+            error: function(e) {
+
+            }
+        });
 
     });
 
@@ -104,12 +174,43 @@
             dataType: 'json',
 
             success: function (data, status) {
-                alert(" upload success ");
+                //window.location.reload();
+
+                userid = getCookie('userid');
+                session = getCookie('session');
+                uname = getCookie('username');
+
+                var req_data = {
+                    "url": "http://192.168.189.134:8000/videos/wangbojing",
+                    "method": "POST",
+                    "req_body": "{\"author_id\": " + userid + ", \"name\":\"" + filename + "\"}"
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: "http://192.168.189.134:8080/api",
+                    data: JSON.stringify(req_data),
+                    dataType: 'json',
+                    beforeSend: function(xhrq) {
+                        xhrq.setRequestHeader("X-Session-Id", session);
+                        xhrq.setRequestHeader("X-User-Name", uname);
+                    },
+                    success: function(d) {
+
+                    },
+                    complete: function() {
+                        window.location.reload();
+                    },
+                    error: function(e) {
+
+                    }
+                });
             },
             error: function (data, status, e) {
                 alert("function error");
             }
         });
+
     });
 
     $('#logoutBtn').bind('click', function() {
@@ -177,7 +278,7 @@ function signinUser(callback) {
 }
 
 function getUserId(callback) {
-
+    
 }
 // Video Operations
 function createVideo(vname, callback) {
@@ -190,6 +291,10 @@ function listAllVideos(callback) {
 
 function deleteVideo(vid, callback) {
 
+}
+
+function showDefaultVideo() {
+    return video_url_base + getCookie("defaultvideo");
 }
 
 // Comments Operations
@@ -212,14 +317,14 @@ function uploadComplete(evt) {
 
 var video_url_base = "http://192.168.189.134:8080/statics/video/";
 var image_url_base = "http://192.168.189.134:8080/statics/images/";
-
+/*
 var AllVideos = [
     {srcurl: video_url_base + "2.mp4", title: 'videotag 2.mp4', detail: '详细内容'},
     {srcurl: video_url_base + "1.mp4", title: 'videotag 1.mp4', detail: '详细内容'},
     {srcurl: video_url_base + "0.mp4", title: 'videotag 0.mp4', detail: '详细内容'},
     {srcurl: video_url_base + "123456.mp4", title: 'videotag 11.mp4', detail: '详细内容'},
-];
-//var AllVideos;
+];*/
+var AllVideos;
 
 function showVideoThumbnail(VideoItem, idx) {
     
@@ -247,13 +352,15 @@ function listVideos(Videos) {
     }
     return html;
 } 
-
+/*
 var AllComments = [
     {usericon: image_url_base + "user1-128x128.jpg", username: 'Sarah Ross', posttime: '2018-09-27 15:56:34', postcontent: 'This is the default theme that comes with SideComments.js. You can easily theme and just styling it all yourself.'},
     {usericon: image_url_base + "clay_davis.png", username: 'Clay Davis', posttime: '2018-09-25 15:54:13', postcontent: 'This is the default theme that comes with SideComments.js.'},
     {usericon: image_url_base + "donald_draper.png", username: 'Donald Draper', posttime: '2018-09-24 15:56:45', postcontent: 'You can easily theme and just styling it all yourself.'},
     {usericon: image_url_base + "jon_snow.png", username: 'Jon Snow', posttime: '2018-09-21 15:56:45', postcontent: 'You can easily theme and just styling it all yourself.'},
-];
+];*/
+
+var AllComments;
 
 function showCommentItem(CommentItem, idx) {
 
@@ -276,7 +383,7 @@ function showCommentItem(CommentItem, idx) {
 }
 
 function listComments(Comments) {
-    alert("listComments");
+    //alert("listComments");
     var html = '';
     for (var i = 0;i < Comments.length;i ++) {
         html += showCommentItem(Comments[i], i+1);
@@ -295,18 +402,18 @@ function initUserHomePage() {
     uname = getCookie('username');
     session = getCookie('session');
 
-    var data = {
+    var video_req = {
         "url": "http://192.168.189.134:8000/videos/" + uname,
         "method": "GET",
         "req_body": ""
-    }
+    };
 
     $.ajax({
         type: 'POST', 
         url: "http://192.168.189.134:8080/api",
         secureuri: false,
         dataType: 'json',
-        data: JSON.stringify(data),
+        data: JSON.stringify(video_req),
         
         beforeSend: function(xhrq) {
             xhrq.setRequestHeader("X-Session-Id", session);
@@ -314,23 +421,76 @@ function initUserHomePage() {
         },
         complete: function () {
             //$("#submit").removeAttr("disabled");
-            alert("complete");
-            //$('.col-sm-5').prepend(listVideos(AllVideos));
+            //alert("complete");
+            $('.col-sm-5').prepend(listVideos(AllVideos));
         },
         success: function(d) {
-            /*
-            var json = JSON.parse(JSON.stringify( d ))
+            
+            var json = JSON.parse(JSON.stringify( d ));
             var videos = json.videos;
-            
-            
+
+            if (videos.length < 1) return ;
+
             AllVideos = new Array(videos.length);
             for (var i = 0;i < videos.length;i ++) {
-                AllVideos[i] = {srcurl: video_url_base + videos[i].name, title: "videotag " + videos[i].name, detail: '详细内容'};
-            }*/
+                AllVideos[i] = {srcurl: video_url_base + videos[i].name, 
+                                title: "videotag " + videos[i].name, 
+                                detail: '详细内容',
+                                videoid: videos[i].id,
+                                author_id: videos[i].author_id};
+            }
+
+            setCookie("defaultvideo", videos[0].name, 30 * 60 * 60);
+            setCookie("defaultvideo_id", videos[0].id, 30 * 60 * 60);
+            setCookie("defaultvideo_authorid", videos[0].author_id, 30 * 60 * 60);
+
+            document.getElementById('mainvideo').setAttribute("src", showDefaultVideo());
+
+            /*  */
+            var comment_req = {
+                "url": "http://192.168.189.134:8000/comments/videos/" + videos[0].id,
+                "method": "GET",
+                "req_body": ""
+            };
+            $.ajax({
+                type: 'POST', 
+                url: "http://192.168.189.134:8080/api",
+                secureuri: false,
+                dataType: 'json',
+                data: JSON.stringify(comment_req),
+                
+                beforeSend: function(xhrq) {
+                    xhrq.setRequestHeader("X-Session-Id", session);
+                    xhrq.setRequestHeader("X-User-Name", uname);
+                },
+//{usericon: image_url_base + "clay_davis.png", username: 'Clay Davis', posttime: '2018-09-25 15:54:13', postcontent: 'This is the default theme that comes with SideComments.js.'},
+                success: function(d) {
+
+                    var json = JSON.parse(JSON.stringify( d ));
+                    var comments = json.comments;
+
+                    if (comments == null) return;
+                    if (comments.length < 1) return ;
+
+                    AllComments = new Array(comments.length);
+                    for (var i = 0;i < comments.length;i ++) {
+                        AllComments[i] = {usericon: image_url_base + comments[i].icon,
+                            username: comments[i].author,
+                            posttime: comments[i].time,
+                            postcontent: comments[i].content};
+                    }
+                },
+                complete: function() {
+                    $('.commentable-container').prepend(listComments(AllComments));
+                }
+        
+            });
         },
         error: function(e) {
             alert("failed" + e);
         }
-    })
+    });
+
+    
 
 }
