@@ -23,72 +23,7 @@
             alert("User Name or password is null");
             return ;
         }
-        var hash = md5(password)
-        
-        /*
-        {
-	"url": "http://192.168.189.134:8000/user/wangbojing",
-	"method": "POST",
-    "req_body": "{\"user_name\":\"wangbojing\",\"pwd\":\"e12ba37ed81660d5c918a919622f78c3\"}"
-}
-        */
-        var data = {
-            "url": "http://192.168.189.134:8000/user/wangbojing",
-            "method": "POST",
-            "req_body": "{\"user_name\":\"" + userName + "\",\"pwd\": \"" + hash + "\"}"
-        };
-        var req_data = {
-            "url": "http://192.168.189.134:8000/user/wangbojing",
-            "method": "GET",
-            "req_body": "{\"user_name\":\"" + userName + "\",\"pwd\": \"" + hash + "\"}"
-        };
-
-        $.ajax({
-            type: 'POST',
-            url: "http://192.168.189.134:8080/api",
-            data: JSON.stringify(data),
-            dataType: 'json',
-            
-            success: function(d) {
-                var json = JSON.parse(JSON.stringify(d));
-
-                setCookie("username", userName, 30 * 60 * 60);
-                setCookie("session", hash, 30 * 60 * 60);
-
-                location.href="http://192.168.189.134:8080/userHome";
-            },
-            error: function(e) {
-                alert('error');
-            },
-            complete: function() {
-
-                session = getCookie('session');
-                uname = getCookie('username');
-
-                $.ajax({
-                    type: 'POST',
-                    url: "http://192.168.189.134:8080/api",
-                    data: JSON.stringify(req_data),
-                    dataType: 'json',
-
-                    beforeSend: function(xhrq) {
-                        xhrq.setRequestHeader("X-Session-Id", session);
-                        xhrq.setRequestHeader("X-User-Name", uname);
-                    },
-                    success: function(d) {
-        
-                        var json = JSON.parse(JSON.stringify(d));
-                        var idx = json.id;
-
-                        setCookie("userid", idx, 30 * 60 * 60);
-
-                    },
-                    error: function(e) {
-                        alert('error' + JSON.stringify(e));
-                    }
-                });
-            }
-        });
+        signinUser(userName, password, getUserId);
     });
 
     $("#signinhref").bind('click', function() {
@@ -115,43 +50,9 @@
     });
 
     $('#cmtBtn').bind('click', function() {
-        //alert("Send Comments");
+
         var comment = $(cmtTxt).val();
-        userid = getCookie('userid');
-
-        videoid = getCookie('defaultvideo_id');
-/*
-        setCookie("defaultvideo", videos[0].name, 30 * 60 * 60);
-        setCookie("defaultvideo_id", videos[0].id, 30 * 60 * 60);
-        setCookie("defaultvideo_authorid", videos[0].author_id, 30 * 60 * 60);
-*/
-        //alert(comment);
-
-        var req_data = {
-            "url": "http://192.168.189.134:8000/comments/videos/" + videoid,
-            "method": "POST",
-            "req_body": "{\"author_id\":" + userid + ", \"content\": \"" + comment + "\"}"
-        };
-        
-        $.ajax({
-            type: 'POST',
-            url: "http://192.168.189.134:8080/api",
-            data: JSON.stringify(req_data),
-            dataType: 'json',
-            beforeSend: function(xhrq) {
-                xhrq.setRequestHeader("X-Session-Id", session);
-                xhrq.setRequestHeader("X-User-Name", uname);
-            },
-            success: function(d) {
-                //alert(JSON.stringify(d));
-            },
-            complete: function() {
-                window.location.reload();
-            },
-            error: function(e) {
-
-            }
-        });
+        postComment(comment);
 
     });
 
@@ -174,7 +75,6 @@
             dataType: 'json',
 
             success: function (data, status) {
-                //window.location.reload();
 
                 userid = getCookie('userid');
                 session = getCookie('session');
@@ -273,12 +173,70 @@ function registerUser(callback) {
 
 }
 
-function signinUser(callback) {
+function signinUser(userName, password, callback) {
 
+    var hash = md5(password);
+    var data = {
+        "url": "http://192.168.189.134:8000/user/wangbojing",
+        "method": "POST",
+        "req_body": "{\"user_name\":\"" + userName + "\",\"pwd\": \"" + hash + "\"}"
+    };
+    
+    $.ajax({
+        type: 'POST',
+        url: "http://192.168.189.134:8080/api",
+        data: JSON.stringify(data),
+        dataType: 'json',
+        
+        success: function(d) {
+            var json = JSON.parse(JSON.stringify(d));
+
+            setCookie("username", userName, 30 * 60 * 60);
+            setCookie("session", hash, 30 * 60 * 60);
+
+            location.href="http://192.168.189.134:8080/userHome";
+        },
+        error: function(e) {
+            alert('error');
+        },
+        complete: function() {
+            callback();            
+        }
+    });
 }
 
-function getUserId(callback) {
-    
+function getUserId() {
+    session = getCookie('session');
+    uname = getCookie('username');
+
+    var req_data = {
+        "url": "http://192.168.189.134:8000/user/wangbojing",
+        "method": "GET",
+        "req_body": "{\"user_name\":\"" + userName + "\",\"pwd\": \"" + hash + "\"}"
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: "http://192.168.189.134:8080/api",
+        data: JSON.stringify(req_data),
+        dataType: 'json',
+
+        beforeSend: function(xhrq) {
+            xhrq.setRequestHeader("X-Session-Id", session);
+            xhrq.setRequestHeader("X-User-Name", uname);
+        },
+        success: function(d) {
+
+            var json = JSON.parse(JSON.stringify(d));
+            var idx = json.id;
+
+            setCookie("userid", idx, 30 * 60 * 60);
+
+        },
+        error: function(e) {
+            alert('error' + JSON.stringify(e));
+        }
+    });
 }
 // Video Operations
 function createVideo(vname, callback) {
@@ -298,11 +256,87 @@ function showDefaultVideo() {
 }
 
 // Comments Operations
-function postComment(vid, content) {
+function postComment(comment) {
+    userid = getCookie('userid');
+    videoid = getCookie('defaultvideo_id');
 
+    var req_data = {
+        "url": "http://192.168.189.134:8000/comments/videos/" + videoid,
+        "method": "POST",
+        "req_body": "{\"author_id\":" + userid + ", \"content\": \"" + comment + "\"}"
+    };
+    
+    $.ajax({
+        type: 'POST',
+        url: "http://192.168.189.134:8080/api",
+        data: JSON.stringify(req_data),
+        dataType: 'json',
+        beforeSend: function(xhrq) {
+            xhrq.setRequestHeader("X-Session-Id", session);
+            xhrq.setRequestHeader("X-User-Name", uname);
+        },
+        success: function(d) {
+            //alert(JSON.stringify(d));
+        },
+        complete: function() {
+            window.location.reload();
+        },
+        error: function(e) {
+
+        }
+    });
 }
 
 function listAllComments(vid, callback) {
+
+    uname = getCookie('username');
+    session = getCookie('session');
+
+    var comment_req = {
+        "url": "http://192.168.189.134:8000/comments/videos/" + vid,
+        "method": "GET",
+        "req_body": ""
+    };
+    $.ajax({
+        type: 'POST', 
+        url: "http://192.168.189.134:8080/api",
+        secureuri: false,
+        dataType: 'json',
+        data: JSON.stringify(comment_req),
+        
+        beforeSend: function(xhrq) {
+            xhrq.setRequestHeader("X-Session-Id", session);
+            xhrq.setRequestHeader("X-User-Name", uname);
+        },
+//{usericon: image_url_base + "clay_davis.png", username: 'Clay Davis', posttime: '2018-09-25 15:54:13', postcontent: 'This is the default theme that comes with SideComments.js.'},
+        success: function(d) {
+
+            var json = JSON.parse(JSON.stringify( d ));
+            var comments = json.comments;
+
+            if (comments == null) {
+                AllComments = null;
+                return;
+            } 
+            if (comments.length < 1) {
+                AllComments = null;
+                return ;
+            } 
+
+            AllComments = new Array(comments.length);
+            for (var i = 0;i < comments.length;i ++) {
+                AllComments[i] = {usericon: image_url_base + comments[i].icon,
+                    username: comments[i].author,
+                    posttime: comments[i].time,
+                    postcontent: comments[i].content};
+            }
+        },
+        complete: function() {
+            $('.commentable-container').empty();
+            $('.commentable-container').prepend(listComments(AllComments));
+        }
+
+    });
 
 }
 
@@ -317,13 +351,7 @@ function uploadComplete(evt) {
 
 var video_url_base = "http://192.168.189.134:8080/statics/video/";
 var image_url_base = "http://192.168.189.134:8080/statics/images/";
-/*
-var AllVideos = [
-    {srcurl: video_url_base + "2.mp4", title: 'videotag 2.mp4', detail: '详细内容'},
-    {srcurl: video_url_base + "1.mp4", title: 'videotag 1.mp4', detail: '详细内容'},
-    {srcurl: video_url_base + "0.mp4", title: 'videotag 0.mp4', detail: '详细内容'},
-    {srcurl: video_url_base + "123456.mp4", title: 'videotag 11.mp4', detail: '详细内容'},
-];*/
+
 var AllVideos;
 
 function showVideoThumbnail(VideoItem, idx) {
@@ -331,7 +359,7 @@ function showVideoThumbnail(VideoItem, idx) {
     var div = '<div class="thumbnail" onclick="clickVideoThumbnail('+ idx +')">' 
             + '<div class="caption">'
             + '<p>'
-            + '<video width="100%" src="'+ VideoItem.srcurl +'" controls="controls">'
+            + '<video width="100%" src="'+ video_url_base+VideoItem.name +'" controls="controls">'
             + VideoItem.title
             + '</video>'
             + '</p>'
@@ -383,7 +411,9 @@ function showCommentItem(CommentItem, idx) {
 }
 
 function listComments(Comments) {
-    //alert("listComments");
+
+    if (Comments == null) return '';
+
     var html = '';
     for (var i = 0;i < Comments.length;i ++) {
         html += showCommentItem(Comments[i], i+1);
@@ -392,12 +422,20 @@ function listComments(Comments) {
 }
 
 function clickVideoThumbnail(idx) {
-    alert('clickVideoThumbnail  ' + idx);
+    //alert('clickVideoThumbnail  ' + idx);
+    //AllVideos[idx].
+
+    setCookie("defaultvideo", AllVideos[idx].name, 30 * 60 * 60);
+    setCookie("defaultvideo_id", AllVideos[idx].videoid, 30 * 60 * 60);
+    setCookie("defaultvideo_authorid", AllVideos[idx].author_id, 30 * 60 * 60);
+
+    document.getElementById('mainvideo').setAttribute("src", showDefaultVideo());
+
+    listAllComments(AllVideos[idx].videoid, null);
 }
 
 
 function initUserHomePage() {
-    //alert('initUserHomePage');
 
     uname = getCookie('username');
     session = getCookie('session');
@@ -420,9 +458,8 @@ function initUserHomePage() {
             xhrq.setRequestHeader("X-User-Name", uname);
         },
         complete: function () {
-            //$("#submit").removeAttr("disabled");
-            //alert("complete");
             $('.col-sm-5').prepend(listVideos(AllVideos));
+            //document.getElementById('col-sm-5').innerHTML = listVideos(AllVideos);
         },
         success: function(d) {
             
@@ -433,58 +470,21 @@ function initUserHomePage() {
 
             AllVideos = new Array(videos.length);
             for (var i = 0;i < videos.length;i ++) {
-                AllVideos[i] = {srcurl: video_url_base + videos[i].name, 
+                AllVideos[i] = {name: videos[i].name, 
                                 title: "videotag " + videos[i].name, 
                                 detail: '详细内容',
                                 videoid: videos[i].id,
                                 author_id: videos[i].author_id};
             }
 
-            setCookie("defaultvideo", videos[0].name, 30 * 60 * 60);
-            setCookie("defaultvideo_id", videos[0].id, 30 * 60 * 60);
-            setCookie("defaultvideo_authorid", videos[0].author_id, 30 * 60 * 60);
+            setCookie("defaultvideo", AllVideos[0].name, 30 * 60 * 60);
+            setCookie("defaultvideo_id", AllVideos[0].videoid, 30 * 60 * 60);
+            setCookie("defaultvideo_authorid", AllVideos[0].author_id, 30 * 60 * 60);
 
             document.getElementById('mainvideo').setAttribute("src", showDefaultVideo());
 
             /*  */
-            var comment_req = {
-                "url": "http://192.168.189.134:8000/comments/videos/" + videos[0].id,
-                "method": "GET",
-                "req_body": ""
-            };
-            $.ajax({
-                type: 'POST', 
-                url: "http://192.168.189.134:8080/api",
-                secureuri: false,
-                dataType: 'json',
-                data: JSON.stringify(comment_req),
-                
-                beforeSend: function(xhrq) {
-                    xhrq.setRequestHeader("X-Session-Id", session);
-                    xhrq.setRequestHeader("X-User-Name", uname);
-                },
-//{usericon: image_url_base + "clay_davis.png", username: 'Clay Davis', posttime: '2018-09-25 15:54:13', postcontent: 'This is the default theme that comes with SideComments.js.'},
-                success: function(d) {
-
-                    var json = JSON.parse(JSON.stringify( d ));
-                    var comments = json.comments;
-
-                    if (comments == null) return;
-                    if (comments.length < 1) return ;
-
-                    AllComments = new Array(comments.length);
-                    for (var i = 0;i < comments.length;i ++) {
-                        AllComments[i] = {usericon: image_url_base + comments[i].icon,
-                            username: comments[i].author,
-                            posttime: comments[i].time,
-                            postcontent: comments[i].content};
-                    }
-                },
-                complete: function() {
-                    $('.commentable-container').prepend(listComments(AllComments));
-                }
-        
-            });
+            listAllComments(videos[0].id, null);
         },
         error: function(e) {
             alert("failed" + e);
